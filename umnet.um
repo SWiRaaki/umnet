@@ -1,0 +1,91 @@
+type(
+	SocketRaw*      = uint
+	Address4*       = uint32
+	Address6*       = [16]uint8
+	ProtocolFamily* = enum {
+		IpV4
+		IpV6
+	}
+	SocketType*     = enum {
+		Stream
+		Datagram
+		Raw
+		Rdm
+		SequencedPacket
+	}
+	SocketChannel*  = enum {
+		Read
+		Write
+		Both
+	}
+	Socket*         = struct {
+		Raw:      SocketRaw
+		Domain:   ProtocolFamily
+		Type:     SocketType
+		Protocol: int32
+		Address:  Address6
+		FlowInfo: uint32
+		Scope:    uint32
+	}
+	Result*         = struct {
+		Code:    int
+		Message: str
+	}
+)
+
+fn umc_SocketCreate( info: ^Socket ): Result
+fn umc_SocketClose( info: ^Socket ): Result
+fn umc_SocketBind( info: ^Socket, address, port: str ): Result
+fn umc_SocketListen( info: ^Socket, backlog: int32 ): Result
+fn umc_SocketAccept( info, out_connect: ^Socket): Result
+fn umc_SocketConnect( info: ^Socket, address, port: str, out_connect: ^Socket ): Result
+fn umc_SocketGetReceiveSize( info: ^Socket, out_size: ^uint ): Result
+fn umc_SocketSend( info: ^Socket, buffer: []uint8, out_send: ^uint ): Result
+fn umc_SocketSendText( info: ^Socket, buffer: str, out_send: ^uint ): Result
+fn umc_SocketReceive( info: ^Socket, buffer: []uint8, out_read: ^uint ): Result
+fn umc_SocketShutdown( info: ^Socket, channel: SocketChannel ): Result
+
+fn ( this: ^Socket ) Create*(): Result {
+	return umc_SocketCreate( this )
+}
+
+fn ( this: ^Socket ) Close*(): Result {
+	return umc_SocketClose( this )
+}
+
+fn ( this: ^Socket ) Bind*( address, port: str ): Result {
+	return umc_SocketBind( this, address, port )
+}
+
+fn ( this: ^Socket ) Listen*( backlog: int32 ): Result {
+	return umc_SocketListen( this, backlog )
+}
+
+fn ( this: ^Socket ) Accept*( out_connect: ^Socket ): Result {
+	return umc_SocketAccept( this, out_connect )
+}
+
+fn ( this: ^Socket ) Connect*( address, port: str, out_connect: ^Socket ): Result {
+	return umc_SocketConnect( this, address, port, out_connect )
+}
+
+fn ( this: ^Socket ) GetReceiveSize*( out_size: ^uint ): Result {
+	return umc_SocketGetReceiveSize( this, out_size )
+}
+
+fn ( this: ^Socket ) Send*( buffer: []uint8, out_send: ^uint ): Result {
+	return umc_SocketSend( this, buffer, out_send )
+}
+
+fn ( this: ^Socket ) SendText*( buffer: str, out_send: ^uint ):Result {
+	return umc_SocketSendText( this, buffer, out_send );
+}
+
+fn ( this: ^Socket ) Receive*( buffer: []uint8, out_read: ^uint ): Result {
+	return umc_SocketReceive( this, buffer, out_read )
+}
+
+fn ( this: ^Socket ) Shutdown*( channel: SocketChannel ): Result {
+	return umc_SocketShutdown( this, channel )
+}
+

@@ -1,0 +1,35 @@
+import net = "umnet.um"
+
+fn main() {
+	var client: net::Socket
+	var server: net::Socket
+
+	client.Domain = net::ProtocolFamily.IpV4
+	client.Type   = net::SocketType.Stream
+
+	res := client.Create()
+	if res.Code != 0 {
+		printf( "[%d] %s", res.Code, res.Message )
+		exit( res.Code )
+	}
+
+	printf( "Connecting to localhost:8080..\n" )
+	res = client.Connect( "localhost", "8080", &server )
+	if res.Code != 0 {
+		printf( "[%d] %s", res.Code, res.Message )
+		exit( res.Code )
+	}
+
+	msg := "Hello from client!"
+	dat := []uint8( msg )
+	printf( "Connected!\nSending hello world message:\n")
+	var read: uint
+	res = client.SendText( msg, &read )
+	if res.Code != 0 {
+		printf( "[%d] %s\n", res.Code, res.Message )
+		exit( res.Code )
+	}
+	printf( "%d bytes send\n", read )
+
+	// client.Shutdown( net::SocketChannel.Both )
+}

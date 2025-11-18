@@ -1,0 +1,49 @@
+import net = "umnet.um"
+
+fn main() {
+	var server: net::Socket
+
+	server.Domain = net::ProtocolFamily.IpV4
+	server.Type   = net::SocketType.Stream
+
+	res := server.Create()
+	if res.Code != 0 {
+		printf( "[%d] %s\n", res.Code, res.Message )
+		exit( res.Code )
+	}
+
+	res = server.Bind( "0.0.0.0", "8080" )
+	if res.Code != 0 {
+		printf( "[%d] %s\n", res.Code, res.Message )
+		exit( res.Code )
+	}
+
+	res = server.Listen( 64 )
+	if res.Code != 0 {
+		printf( "[%d] %s\n", res.Code, res.Message )
+		exit( res.Code )
+	}
+	printf( "Listening..\n" )
+
+	running := true
+	for running {
+		var client: net::Socket
+		res = server.Accept( &client )
+		if res.Code != 0 {
+			printf( "[%d] %s\n", res.Code, res.Message )
+			exit( res.Code )
+		}
+		printf( "Client connected\n" )
+
+		var buf: []uint8
+		var read: uint
+		res = client.Receive( buf, &read )
+		if res.Code != 0 {
+			printf( "[%d] %s\n", res.Code, res.Message )
+			exit( res.Code )
+		}
+
+		printf( "Message with %d bytes received:\n", read )
+		printf( "%s", str(buf) )
+	}
+}
