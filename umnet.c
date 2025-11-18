@@ -178,6 +178,7 @@ UMKA_EXPORT void umc_SocketReceive( UmkaStackSlot * p_params, UmkaStackSlot * p_
 	api->umkaMakeDynArray( umka, buffer, buffer_type, (int)read );
 	Debug( "Filling dynamic umka array with received data" );
 	memcpy( buffer->data, buf, read );
+	free( buf );
 	Debug( "Setting output parameter to bytes read" );
 	*out_read = read;
 
