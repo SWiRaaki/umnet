@@ -37,13 +37,13 @@ fn main() {
 
 		var buf: []uint8
 		var read: uint
-		res = client.Receive( buf, &read )
+		res = client.Receive( &buf, &read )
 		if res.Code != 0 {
 			printf( "[%d] %s\n", res.Code, res.Message )
 			exit( res.Code )
 		}
 
 		printf( "Message with %d bytes received:\n", read )
-		printf( "%s", str(buf) )
+		printf( "%s\n", str(buf) )
 	}
 }

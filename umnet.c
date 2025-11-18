@@ -154,7 +154,8 @@ UMKA_EXPORT void umc_SocketReceive( UmkaStackSlot * p_params, UmkaStackSlot * p_
 	Debug( "Retrieving call parameters" );
 	SocketInfo * const this = api->umkaGetParam( p_params, 0 )->ptrVal;
 	UmkaDynArray( u8 ) * const buffer = api->umkaGetParam( p_params, 1 )->ptrVal;
-	UmkaType const * const buffer_type = api->umkaGetParamType( p_params, 1 );
+	UmkaType const * const buffer_ptr_type = api->umkaGetParamType( p_params, 1 );
+	UmkaType const * const buffer_type = api->umkaGetBaseType( buffer_ptr_type );
 	u64 * const out_read = api->umkaGetParam( p_params, 2 )->ptrVal;
 
 	Debug( "Reading data from socket" );
@@ -163,6 +164,7 @@ UMKA_EXPORT void umc_SocketReceive( UmkaStackSlot * p_params, UmkaStackSlot * p_
 	u64 read = 0;
 	Result ret = SocketReceive( this->Socket, (ptr *)&buf, &bufs, &read );
 	Debug( "buf: %p; bufs: %zu; read: %zu", buf, bufs, read );
+	Debug( "buf-content: %s", buf );
 	if ( ret.Code != 0 ) {
 		UResult * const res = api->umkaGetResult( p_params, p_result )->ptrVal;
 		*res = (UResult) {
@@ -175,10 +177,7 @@ UMKA_EXPORT void umc_SocketReceive( UmkaStackSlot * p_params, UmkaStackSlot * p_
 	Debug( "Create dynamic umka array" );
 	api->umkaMakeDynArray( umka, buffer, buffer_type, (int)read );
 	Debug( "Filling dynamic umka array with received data" );
-	//memcpy( buffer->data, buf, 1 );
-	for ( u64 i = 0; i < read; ++i ) {
-		buffer->data[i] = buf[i];
-	}
+	memcpy( buffer->data, buf, read );
 	Debug( "Setting output parameter to bytes read" );
 	*out_read = read;
 
