@@ -1,4 +1,4 @@
-#include <umka_api.h>
+#include "umka_api.h"
 #include "mlibc.h"
 
 #include <string.h>
@@ -147,24 +147,19 @@ UMKA_EXPORT void umc_SocketSendText( UmkaStackSlot * p_params, UmkaStackSlot * p
 }
 
 UMKA_EXPORT void umc_SocketReceive( UmkaStackSlot * p_params, UmkaStackSlot * p_result ) {
-	Debug( "Function [%s:%d].%s called!", __FILE_NAME__, __LINE__, "umc_SocketReceive" );
 	Umka * umka = umkaGetInstance( p_result );
 	UmkaAPI * api = umkaGetAPI( umka );
 
-	Debug( "Retrieving call parameters" );
 	SocketInfo * const this = api->umkaGetParam( p_params, 0 )->ptrVal;
 	UmkaDynArray( u8 ) * const buffer = api->umkaGetParam( p_params, 1 )->ptrVal;
 	UmkaType const * const buffer_ptr_type = api->umkaGetParamType( p_params, 1 );
 	UmkaType const * const buffer_type = api->umkaGetBaseType( buffer_ptr_type );
 	u64 * const out_read = api->umkaGetParam( p_params, 2 )->ptrVal;
 
-	Debug( "Reading data from socket" );
 	u8 * buf = NULL;
 	u64 bufs = 0;
 	u64 read = 0;
 	Result ret = SocketReceive( this->Socket, (ptr *)&buf, &bufs, &read );
-	Debug( "buf: %p; bufs: %zu; read: %zu", buf, bufs, read );
-	Debug( "buf-content: %s", buf );
 	if ( ret.Code != 0 ) {
 		UResult * const res = api->umkaGetResult( p_params, p_result )->ptrVal;
 		*res = (UResult) {
@@ -174,22 +169,16 @@ UMKA_EXPORT void umc_SocketReceive( UmkaStackSlot * p_params, UmkaStackSlot * p_
 		return;
 	}
 
-	Debug( "Create dynamic umka array" );
 	api->umkaMakeDynArray( umka, buffer, buffer_type, (int)read );
-	Debug( "Filling dynamic umka array with received data" );
 	memcpy( buffer->data, buf, read );
 	free( buf );
-	Debug( "Setting output parameter to bytes read" );
 	*out_read = read;
 
-	Debug( "Setting return value" );
 	UResult * const res = api->umkaGetResult( p_params, p_result )->ptrVal;
 	*res = (UResult) {
 		.Code = ret.Code,
 		.Message = api->umkaMakeStr( umka, ret.Message )
 	};
-
-	Debug( "Function [%s:%d].%s finished!", __FILE_NAME__, __LINE__, "umc_SocketReceive" );
 }
 
 UMKA_EXPORT void umc_SocketShutdown( UmkaStackSlot * p_params, UmkaStackSlot * p_result ) {
