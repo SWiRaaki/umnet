@@ -3,6 +3,34 @@
 
 #include <string.h>
 
+#ifdef MLIBC_COMPILER_MSVC
+
+#include <windows.h>
+
+BOOL WINAPI DllMain( HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved ) {
+	(void)hinstDLL;
+	(void)lpvReserved;
+
+	switch ( fdwReason )
+	{
+	case DLL_PROCESS_ATTACH:
+		SocketInitialize();
+		break;
+	case DLL_THREAD_ATTACH:
+		// skip
+		break;
+	case DLL_THREAD_DETACH:
+		// skip
+		break;
+	case DLL_PROCESS_DETACH:
+		SocketRelease();
+		break;
+	}
+	return TRUE;
+}
+
+#endif
+
 typedef struct {
 	i64 Code;
 	str Message;
