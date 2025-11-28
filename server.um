@@ -44,6 +44,10 @@ fn main() {
 		}
 
 		printf( "Message with %d bytes received:\n", read )
+
+		var send: uint
+		res = client.SendText( "OK", &uint )
+
 		printf( "%s\n", str(buf) )
 	}
 }

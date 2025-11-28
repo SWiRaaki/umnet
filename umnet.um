@@ -88,4 +88,3 @@ fn ( this: ^Socket ) Receive*( buffer: ^[]uint8, out_read: ^uint ): Result {
 fn ( this: ^Socket ) Shutdown*( channel: SocketChannel ): Result {
 	return umc_SocketShutdown( this, channel )
 }
-

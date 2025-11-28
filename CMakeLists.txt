@@ -30,7 +30,9 @@ set_target_properties(
 if( WIN32 )
 	# message( STATUS "Build for Windows starts.." )
 	add_definitions( -DPLATFORM_WINDOWS )
-	set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /GS- /GR- /EHsc /Wall /WX /permissive /wd4820 /wd4668 /wd5039 /wd4514 /wd5045 /wd4324" )
+	set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /GS- /GR- /EHsc /W3 /WX /permissive /wd4820 /wd4668 /wd5039 /wd4514 /wd5045 /wd4324" )
+	set( CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7" )
+	set( CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS} /O2" )
 	add_library(umka STATIC IMPORTED)
     set_target_properties(umka PROPERTIES
         IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/libumka_static.lib"

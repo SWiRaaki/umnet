@@ -23,10 +23,17 @@ fn main() {
 	msg := "Hello from client!"
 	dat := []uint8( msg )
 	printf( "Connected!\nSending hello world message:\n")
-	var read: uint
-	res = client.SendText( msg, &read )
+	var send: uint
+	res = client.SendText( msg, &send )
 	if res.Code != 0 {
 		printf( "[%d] %s\n", res.Code, res.Message )
+		exit( res.Code )
+	}
+	var resp: []uint8
+	var read: uint
+	res = client.Receive( &resp, &resplen )
+	if res.Code != 0 {
+		printf( "[%d] &s\n"m res.Code, res.Message )
 		exit( res.Code )
 	}
 	printf( "%d bytes send\n", read )
