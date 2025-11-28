@@ -29,14 +29,15 @@ fn main() {
 		printf( "[%d] %s\n", res.Code, res.Message )
 		exit( res.Code )
 	}
+	printf( "%d bytes send\n", send )
 	var resp: []uint8
 	var read: uint
-	res = client.Receive( &resp, &resplen )
+	res = client.Receive( &resp, &read )
 	if res.Code != 0 {
-		printf( "[%d] &s\n"m res.Code, res.Message )
+		printf( "[%d] %s\n", res.Code, res.Message )
 		exit( res.Code )
 	}
-	printf( "%d bytes send\n", read )
+	printf( "%d bytes read\n", read )
 
-	// client.Shutdown( net::SocketChannel.Both )
+	client.Shutdown( net::SocketChannel.Both )
 }
